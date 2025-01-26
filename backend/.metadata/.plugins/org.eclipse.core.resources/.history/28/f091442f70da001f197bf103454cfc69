@@ -1,0 +1,65 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "table_entity") // Use a different name to avoid conflicts with the SQL keyword "table"
+public class TableEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "table_name")
+    private String tableName;
+
+    @Column(name = "table_label")
+    private String tableLabel;
+
+    @Column(name = "forms")
+    private Boolean forms;
+
+    @Column(name = "list_view")
+    private Boolean listView;
+
+    // Getters and Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public String getTableLabel() {
+        return tableLabel;
+    }
+
+    public void setTableLabel(String tableLabel) {
+        this.tableLabel = tableLabel;
+    }
+
+    public Boolean getForms() {
+        return forms;
+    }
+
+    public void setForms(Boolean forms) {
+        this.forms = forms;
+    }
+
+    public Boolean getListView() {
+        return listView;
+    }
+
+    public void setListView(Boolean listView) {
+        this.listView = listView;
+    }
+}

@@ -1,0 +1,87 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.FieldSequence;
+import com.example.demo.repository.FieldSequenceRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/field-sequence") // RESTful API base path
+public class FieldSequenceController {
+
+    @Autowired
+    private FieldSequenceRepository fieldSequenceRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    // Fetch all field sequences, ordered by sequence
+    @GetMapping
+    public ResponseEntity<List<FieldSequence>> getAllFieldSequences() {
+        List<FieldSequence> fieldSequences = fieldSequenceRepository.findAllByOrderBySequenceDesc();
+        return ResponseEntity.ok(fieldSequences);
+    }
+
+    // Create a new field sequence
+    @PostMapping
+    public ResponseEntity<FieldSequence> createFieldSequence(@RequestBody FieldSequence fieldSequence) {
+        FieldSequence createdFieldSequence = fieldSequenceRepository.save(fieldSequence);
+        return ResponseEntity.ok(createdFieldSequence);
+    }
+
+    // Fetch a specific field sequence by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<FieldSequence> getFieldSequenceById(@PathVariable("id") Integer id) {
+        Optional<FieldSequence> fieldSequenceOpt = fieldSequenceRepository.findById(id);
+        if (fieldSequenceOpt.isEmpty()) {
+            return ResponseEntity.notFound().build(); // Return 404 if not found
+        }
+        return ResponseEntity.ok(fieldSequenceOpt.get());
+    }
+
+    // Update an existing field sequence
+    @PutMapping("/{id}")
+    public ResponseEntity<FieldSequence> updateFieldSequence(
+            @PathVariable("id") Integer id, 
+            @RequestBody FieldSequence fieldSequence) {
+        if (!fieldSequenceRepository.existsById(id)) {
+            return ResponseEntity.notFound().build(); // Return 404 if not found
+        }
+        fieldSequence.setFieldSequenceId(id); // Ensure the ID is set correctly
+        FieldSequence updatedFieldSequence = fieldSequenceRepository.save(fieldSequence);
+        return ResponseEntity.ok(updatedFieldSequence);
+    }
+
+    // Delete a field sequence
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFieldSequence(@PathVariable("id") Integer id) {
+        if (!fieldSequenceRepository.existsById(id)) {
+            return ResponseEntity.notFound().build(); // Return 404 if not found
+        }
+        fieldSequenceRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Fetch dynamic table names
+    @GetMapping("/table-names")
+    public ResponseEntity<List<String>> getTableNames() {
+        String query = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE'";
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        List<String> tableNames = nativeQuery.getResultList();
+        return ResponseEntity.ok(tableNames);
+    }
+
+    // Utility method for session validation
+    private boolean sessionNotValid() {
+        // Placeholder for actual session validation logic
+        return false; 
+    }
+}

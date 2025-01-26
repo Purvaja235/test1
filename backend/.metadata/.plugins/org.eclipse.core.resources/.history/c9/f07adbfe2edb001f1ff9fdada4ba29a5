@@ -1,0 +1,97 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.TableEntity;
+import com.example.demo.repository.TableRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/api/v1//table")
+public class TableController {
+
+    @Autowired
+    private TableRepository tableRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @GetMapping
+    public String index(Model model) {
+        List<TableEntity> tables = tableRepository.findAllByOrderByTableNameAsc();
+        model.addAttribute("tables", tables);
+        return "table/index";  // Returns the view
+    }
+
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("table", new TableEntity());
+        return "table/create";
+    }
+
+    @PostMapping("/create")
+    public String create(@ModelAttribute TableEntity table, RedirectAttributes redirectAttributes) {
+        tableRepository.save(table);
+        redirectAttributes.addFlashAttribute("message", "Table created successfully!");
+        return "redirect:/table";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable("id") Integer id, Model model) {
+        Optional<TableEntity> tableOpt = tableRepository.findById(id);
+        if (tableOpt.isEmpty()) {
+            return "error/404"; // Show error page if not found
+        }
+        model.addAttribute("table", tableOpt.get());
+        return "table/edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(@PathVariable("id") Integer id, @ModelAttribute TableEntity table, RedirectAttributes redirectAttributes) {
+        table.setId(id);  // Ensure the ID is set correctly
+        tableRepository.save(table);  // Save updated table
+        redirectAttributes.addFlashAttribute("message", "Table updated successfully!");
+        return "redirect:/table";  // Redirect back to the index page
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Integer id, Model model) {
+        Optional<TableEntity> tableOpt = tableRepository.findById(id);
+        if (tableOpt.isEmpty()) {
+            return "error/404"; // Give error page if not found
+        }
+        model.addAttribute("table", tableOpt.get());
+        return "table/delete";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteConfirmed(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        tableRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("message", "Table deleted successfully!");
+        return "redirect:/table";
+    }
+
+    // Method to fetch dynamic table names
+    @GetMapping("/getTableNames")
+    public String getTableNames(Model model) {
+        String query = "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE'";
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        List<String> tableNames = nativeQuery.getResultList();
+
+        model.addAttribute("tableNames", tableNames);
+        return "table/index";  // Returns the view
+    }
+
+    // Utility method for session validation
+    private boolean sessionNotValid() {
+        // Placeholder for actual session validation logic
+        return false;
+    }
+}

@@ -1,0 +1,88 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.FieldSequence;
+import com.example.demo.repository.FieldSequenceRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/v1/")
+public class FieldSequenceController {
+
+    @Autowired
+    private FieldSequenceRepository fieldSequenceRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @GetMapping
+    public ResponseEntity<List<FieldSequence>> getAllFieldSequences() {
+        List<FieldSequence> fieldSequences = fieldSequenceRepository.findAllByOrderBySequenceDesc();
+        return ResponseEntity.ok(fieldSequences);
+    }
+
+    @PostMapping
+    public ResponseEntity<FieldSequence> createFieldSequence(@Valid @RequestBody FieldSequence fieldSequence) {
+        FieldSequence createdFieldSequence = fieldSequenceRepository.save(fieldSequence);
+        return ResponseEntity.ok(createdFieldSequence);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getFieldSequenceById(@PathVariable("id") String id) {
+        try {
+            Integer numericId = Integer.parseInt(id);
+            Optional<FieldSequence> fieldSequenceOpt = fieldSequenceRepository.findById(numericId);
+            if (fieldSequenceOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(fieldSequenceOpt.get());
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid ID format. Expected an integer value.");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<FieldSequence> updateFieldSequence(
+            @PathVariable("id") Integer id, 
+            @Valid @RequestBody FieldSequence fieldSequence) {
+        if (!fieldSequenceRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        fieldSequence.setFieldSequenceId(id);
+        FieldSequence updatedFieldSequence = fieldSequenceRepository.save(fieldSequence);
+        return ResponseEntity.ok(updatedFieldSequence);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFieldSequence(@PathVariable("id") Integer id) {
+        if (!fieldSequenceRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        fieldSequenceRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/table-names")
+    public ResponseEntity<List<String>> getTableNames() {
+        String query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'";
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        List<String> tableNames = nativeQuery.getResultList();
+        return ResponseEntity.ok(tableNames);
+    }
+
+    @GetMapping("/by-table-name/{tableName}")
+    public ResponseEntity<List<FieldSequence>> getFieldSequencesByTableName(@PathVariable("tableName") String tableName) {
+        List<FieldSequence> fieldSequences = fieldSequenceRepository.findByTableName(tableName);
+        if (fieldSequences.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(fieldSequences);
+    }
+}

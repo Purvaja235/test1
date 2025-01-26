@@ -1,0 +1,153 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+
+@Entity
+//@Table
+public class FieldSequence {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer fieldSequenceId;
+
+    @Column
+    private String tableName;
+
+    @Column
+    private String columnName;
+
+    @Column
+    private Integer sequence;
+
+    @Column
+    private String sectionName;
+
+    @Column
+    private Integer sectionSequence;
+
+    @Column
+    private String columnLabel;
+
+    @Column
+    private String datatype;
+
+    @Column(name = "field_value")
+    private String value;
+
+    @Column
+    private String lookupFieldUi;
+
+    @Column
+    private Boolean required;
+
+    @Column
+    private String lookupFilterSource;
+
+    @Column
+    private String lookupFilterData;
+
+    // Getters and Setters
+    public Integer getFieldSequenceId() {
+        return fieldSequenceId;
+    }
+
+    public void setFieldSequenceId(Integer fieldSequenceId) {
+        this.fieldSequenceId = fieldSequenceId;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public Integer getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
+    }
+
+    public String getSectionName() {
+        return sectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    public Integer getSectionSequence() {
+        return sectionSequence;
+    }
+
+    public void setSectionSequence(Integer sectionSequence) {
+        this.sectionSequence = sectionSequence;
+    }
+
+    public String getColumnLabel() {
+        return columnLabel;
+    }
+
+    public void setColumnLabel(String columnLabel) {
+        this.columnLabel = columnLabel;
+    }
+
+    public String getDatatype() {
+        return datatype;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getLookupFieldUi() {
+        return lookupFieldUi;
+    }
+
+    public void setLookupFieldUi(String lookupFieldUi) {
+        this.lookupFieldUi = lookupFieldUi;
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
+    }
+
+    public String getLookupFilterSource() {
+        return lookupFilterSource;
+    }
+
+    public void setLookupFilterSource(String lookupFilterSource) {
+        this.lookupFilterSource = lookupFilterSource;
+    }
+
+    public String getLookupFilterData() {
+        return lookupFilterData;
+    }
+
+    public void setLookupFilterData(String lookupFilterData) {
+        this.lookupFilterData = lookupFilterData;
+    }
+}

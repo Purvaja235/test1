@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.example.demo.MySpringBootAppApplication"/>
+    <fullyQualifiedTypeName name="com.example.demo.FieldSequenceController"/>
+    <fullyQualifiedTypeName name="com.myspringbootapp.model.FieldSequence"/>
+    <fullyQualifiedTypeName name="org.springframework.http.HttpStatus"/>
+</qualifiedTypeNameHistroy>
