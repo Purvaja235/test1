@@ -2,10 +2,16 @@ package com.example.demo.controller;
 
 import com.example.demo.model.TableEntity;
 import com.example.demo.repository.TableRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +21,9 @@ public class TableController {
 
     @Autowired
     private TableRepository tableRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     // Create a new table
     @PostMapping
@@ -62,6 +71,22 @@ public class TableController {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // GET: Fetch Table Names
+    @GetMapping("/getTableNames")
+    @ResponseBody
+    public List<String> getTableNames() {
+        try {
+            String query = "SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_type = 'BASE TABLE' AND table_schema = 'dbo'";
+            Query nativeQuery = entityManager.createNativeQuery(query);
+            @SuppressWarnings("unchecked")
+            List<String> tableNames = nativeQuery.getResultList();
+            return tableNames;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
     }
 }

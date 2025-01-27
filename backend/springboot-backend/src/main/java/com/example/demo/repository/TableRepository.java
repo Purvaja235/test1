@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TableRepository extends JpaRepository<TableEntity, Integer> {
+
+	com.example.demo.controller.TableEntity save(com.example.demo.controller.TableEntity tableEntity);
 }

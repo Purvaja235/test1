@@ -84,4 +84,9 @@ public class TableEntity {
     public void setListView(Boolean listView) {
         this.listView = listView;
     }
+
+	public Query createNativeQuery(String query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
