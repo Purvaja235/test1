@@ -1,0 +1,21 @@
+# Node.js dependencies
+frontend/node_modules/
+
+# Spring Boot build outputs
+backend/target/
+
+# IDE-specific files
+*.iml
+.idea/
+*.class
+*.war
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
